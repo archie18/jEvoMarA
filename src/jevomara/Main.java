@@ -50,10 +50,12 @@ public class Main {
        int mutationNumGenes = 5;
        double minFitness = -12.0;
        int numberOfThreads = 3;
-       int peptideLength = 5;
+       //int peptideLength = 5;
+       int peptideLength = 7;
        int geneLength = 5; // bits
        //String baseDir = "/home/andreas/Documents/evoVina/1BL0_docking_wDNA";
-       String baseDir = "/home/andreas/Documents/evoVina/1BL0_docking_BoxA";
+       //String baseDir = "/home/andreas/Documents/evoVina/1BL0_docking_BoxA";
+       String baseDir = "/home/andreas/Documents/evoVina/1BL0_docking_hepta";
 
 
        // Initilize random number generator
@@ -68,8 +70,8 @@ public class Main {
        //IFitnessFunction fitnessFunction = new SequenceIdentityFitnessFunction().setTargetSequence("RRRR");
        //IFitnessFunction fitnessFunction = new MOEPharmacophoreFitnessFunction();
        IFitnessFunction fitnessFunction = new VinaDockingFitnessFunction().setBaseDir(baseDir);
-       ITerminationCriterion terminationCriterion = new MaxIterationsMinFitnessTerminationCriterion().setMaxIterations(iterations).setMinFitness(new Fitness(minFitness));
-       //ITerminationCriterion terminationCriterion = new MaxIterationsTerminationCriterion().setMaxIterations(iterations);
+       //ITerminationCriterion terminationCriterion = new MaxIterationsMinFitnessTerminationCriterion().setMaxIterations(iterations).setMinFitness(new Fitness(minFitness));
+       ITerminationCriterion terminationCriterion = new MaxIterationsTerminationCriterion().setMaxIterations(iterations);
        //ITerminationCriterion terminationCriterion = new MinFitnessTerminationCriterion().setMinFitness(new Fitness(minFitness));
 
        Optimizer optimizer = new Optimizer().setElitism(elitism);
