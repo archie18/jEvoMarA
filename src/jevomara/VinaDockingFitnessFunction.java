@@ -37,6 +37,26 @@ public class VinaDockingFitnessFunction implements IFitnessFunction {
     //private String baseDir = "/Users/andreas/Documents/evoVina/1BL0_docking";
     private Map<String, Double> dockingScores = new HashMap<String, Double>();
     private double errorFitness = 1000;
+    /** Cap peptides? (Acetylate N-terminus, amidate C-terminus) **/
+    private boolean cap = false;
+
+    /**
+     * Returns true if peptides should be capped (acetylate N-terminus, amidate C-terminus).
+     * @return true if peptides should be capped
+     */
+    public boolean isCap() {
+        return cap;
+    }
+
+    /**
+     * Determines whether peptides should be capped (acetylate N-terminus, amidate C-terminus)
+     * @param cap true if peptides should be capped
+     * @return this object
+     */
+    public VinaDockingFitnessFunction setCap(boolean cap) {
+        this.cap = cap;
+        return this;
+    }
 
     public static boolean removeDirectory(File directory) {
 
@@ -147,12 +167,20 @@ public class VinaDockingFitnessFunction implements IFitnessFunction {
         log.trace("workDir={} peptides={}", workDir, selectedPeptides);
 
         // Build command line
-        String[] args = new String[3 + selectedPeptides.size()];
-        args[0] = dockingScript;
-        args[1] = "-d";
-        args[2] = workDir;
+        int numArgs = 3 + selectedPeptides.size();
+        if (isCap()) {
+            numArgs++;
+        }
+        String[] args = new String[numArgs];
+        int j = 0;
+        args[j++] = dockingScript;
+        if (isCap()) {
+            args[j++] = "-c";
+        }
+        args[j++] = "-d";
+        args[j++] = workDir;
         for (int i = 0; i < selectedPeptides.size(); i++) {
-            args[3 + i] = selectedPeptides.get(i);
+            args[j + i] = selectedPeptides.get(i);
         }
 
         // Run external process
