@@ -13,6 +13,7 @@ import org.apslab.cyclops.Individual;
  */
 public class PeptideIndividual extends Individual {
 
+    @Override
     public String toString() {
         StringBuilder sb = new StringBuilder();
         sb.append(AminoAcids.binaryToSingleLetterCode(((BitArrayGenoType) super.getGenoType()).getChromosome()));
@@ -22,7 +23,21 @@ public class PeptideIndividual extends Individual {
         return sb.toString();
     }
 
+    @Override
     public PeptideIndividual getInstance() {
         return new PeptideIndividual();
-    }    
+    }
+    
+    @Override
+    public boolean equals(Object obj) {
+        //TO-DO: Safe-guard for type cast runtime error
+        return AminoAcids.binaryToSingleLetterCode(((BitArrayGenoType) super.getGenoType()).getChromosome()).equals(AminoAcids.binaryToSingleLetterCode(((BitArrayGenoType) ((PeptideIndividual) obj).getGenoType()).getChromosome()));
+    }
+    
+    @Override
+    public int hashCode() {
+        return AminoAcids.binaryToSingleLetterCode(((BitArrayGenoType) super.getGenoType()).getChromosome()).hashCode();
+    }
+    
+    
 }
