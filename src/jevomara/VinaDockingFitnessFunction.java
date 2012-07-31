@@ -11,11 +11,7 @@ import java.io.FileNotFoundException;
 import java.io.FileReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 import org.apslab.cyclops.BitArrayGenoType;
 import org.apslab.cyclops.Fitness;
 import org.apslab.cyclops.IFitnessFunction;
@@ -90,7 +86,7 @@ public class VinaDockingFitnessFunction implements IFitnessFunction {
             File file = new File(dockingScoresFile);
             reader = new BufferedReader(new FileReader(file));
             String text = null;
-            // repeat until all lines is read
+            // repeat until all lines are read
             while ((text = reader.readLine()) != null) {
                 String[] split = text.split(dockingScoresSeparator);
                 double fitness;
@@ -98,6 +94,7 @@ public class VinaDockingFitnessFunction implements IFitnessFunction {
                     fitness = Double.parseDouble(split[1]);
                 } catch (NumberFormatException ex) {
                     fitness = errorFitness;
+                    log.debug("Error parsing docking score: " + text);
                 }
                 dockingScores.put(split[0], fitness);
             }
@@ -133,18 +130,29 @@ public class VinaDockingFitnessFunction implements IFitnessFunction {
             }
         }
         
+        // Uniquify list of selected peptides (maintains original order of elements)
+        Set<String> tempSet = new HashSet<String>();
+        List<String> tempList = new ArrayList<String>();
+        for (String peptide : selectedPeptides) {
+            if (!tempSet.contains(peptide)) {
+                tempList.add(peptide);
+                tempSet.add(peptide);
+            }
+        }
+        selectedPeptides = tempList;
+        
         // Dock selected peptides
         // Generate a work dir name
         String workDir = Long.toHexString(Double.doubleToLongBits(Random.getInstance().nextDouble()));
-        log.trace("workDir={} peptides={}", workDir, peptides);
+        log.trace("workDir={} peptides={}", workDir, selectedPeptides);
 
         // Build command line
-        String[] args = new String[3 + peptides.size()];
+        String[] args = new String[3 + selectedPeptides.size()];
         args[0] = dockingScript;
         args[1] = "-d";
         args[2] = workDir;
-        for (int i = 0; i < peptides.size(); i++) {
-            args[3 + i] = peptides.get(i);
+        for (int i = 0; i < selectedPeptides.size(); i++) {
+            args[3 + i] = selectedPeptides.get(i);
         }
 
         // Run external process
@@ -152,20 +160,24 @@ public class VinaDockingFitnessFunction implements IFitnessFunction {
             ProcessBuilder pb = new ProcessBuilder(args).directory(new File(baseDir));
             Process process = pb.start();
             process.waitFor();
-//            BufferedReader stdout = new BufferedReader(new InputStreamReader(process.getInputStream()));
-//            BufferedReader stderr = new BufferedReader(new InputStreamReader(process.getErrorStream()));
-//            String line;
-//            System.out.println("Exit code: " + process.exitValue());
-//            System.out.printf("Output of running %s is:", Arrays.toString(args));
-//            while ((line = stdout.readLine()) != null) {
-//                System.out.println(line);
-//            }
-//            System.out.println("");
-//            System.out.printf("Stderr of running %s is:", Arrays.toString(args));
-//            while ((line = stderr.readLine()) != null) {
-//                System.out.println(line);
-//            }
-//            System.out.println("");
+            
+            // Retrieve stdout and stderr
+            if (log.isTraceEnabled()) {
+                BufferedReader stdout = new BufferedReader(new InputStreamReader(process.getInputStream()));
+                BufferedReader stderr = new BufferedReader(new InputStreamReader(process.getErrorStream()));
+                String line;
+                log.trace("Exit code: {}", process.exitValue());
+                log.trace("Output of running {} is:", Arrays.toString(args));
+                while ((line = stdout.readLine()) != null) {
+                    log.trace(line);
+                }
+                log.trace("End of ouput.");
+                log.trace("Stderr of running {} is:", Arrays.toString(args));
+                while ((line = stderr.readLine()) != null) {
+                    log.trace(line);
+                }
+                log.trace("End of stderr.");
+            }
 
             // Parse docking scores output file
             String scoresFiles = baseDir + "/" + workDir + "/" + dockingScoresFile;
