@@ -48,7 +48,7 @@ public class Main {
     private static Properties readConfig(String configFile) throws IOException {
         Properties prop = new Properties();
         // Load default properties
-        prop = readConfigFromInputStream(prop, Main.class.getResourceAsStream("resources/default.properties"));
+        prop = readConfigFromInputStream(prop, Main.class.getResourceAsStream("/resources/default.properties"));
         if (configFile != null) {
             prop = readConfigFromInputStream(prop, new FileInputStream(configFile));
         }
@@ -81,7 +81,7 @@ public class Main {
         // Configure the optimizer
         Long seed = Long.valueOf(prop.getProperty("seed"));
         int iterations = Integer.valueOf(prop.getProperty("iterations"));
-        int populationSize = Integer.valueOf(prop.getProperty("poplationSize"));
+        int populationSize = Integer.valueOf(prop.getProperty("populationSize"));
         int elitism = Integer.valueOf(prop.getProperty("elitism"));
         int tournamentSize = Integer.valueOf(prop.getProperty("tournamentSize"));
         double mutationProbability = Double.valueOf(prop.getProperty("mutationProbability"));
