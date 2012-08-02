@@ -38,23 +38,23 @@ public class VinaDockingFitnessFunction implements IFitnessFunction {
     private Map<String, Double> dockingScores = new HashMap<String, Double>();
     private double errorFitness = 1000;
     /** Cap peptides? (Acetylate N-terminus, amidate C-terminus) **/
-    private boolean cap = false;
+    private boolean capping = false;
 
     /**
      * Returns true if peptides should be capped (acetylate N-terminus, amidate C-terminus).
      * @return true if peptides should be capped
      */
-    public boolean isCap() {
-        return cap;
+    public boolean isCapping() {
+        return capping;
     }
 
     /**
      * Determines whether peptides should be capped (acetylate N-terminus, amidate C-terminus)
-     * @param cap true if peptides should be capped
+     * @param capping true if peptides should be capped
      * @return this object
      */
-    public VinaDockingFitnessFunction setCap(boolean cap) {
-        this.cap = cap;
+    public VinaDockingFitnessFunction setCapping(boolean capping) {
+        this.capping = capping;
         return this;
     }
 
@@ -168,13 +168,13 @@ public class VinaDockingFitnessFunction implements IFitnessFunction {
 
         // Build command line
         int numArgs = 3 + selectedPeptides.size();
-        if (isCap()) {
+        if (isCapping()) {
             numArgs++;
         }
         String[] args = new String[numArgs];
         int j = 0;
         args[j++] = dockingScript;
-        if (isCap()) {
+        if (isCapping()) {
             args[j++] = "-c";
         }
         args[j++] = "-d";
