@@ -138,6 +138,18 @@ public class VinaDockingFitnessFunction implements IFitnessFunction {
         for (Individual individual : individuals) {
             peptides.add(AminoAcids.binaryToSingleLetterCode(((BitArrayGenoType) individual.getGenoType()).getChromosome()));
         }
+        
+        // If capping is enabled, add leading and trailing underscores to
+        // peptide sequence in order indicate their N-terminus should be
+        // acetylated and their C-terminus should be amidated.
+        //if (isCapping()) {
+        if (true) {
+            List<String> peptides2 = new ArrayList<String>();
+            for (String peptide : peptides) {
+                peptides2.add("_" + peptide + "_");
+            }
+            peptides = peptides2;
+        }
 
         // Select peptides without fitness
         List<String> selectedPeptides = new ArrayList<String>();
@@ -168,15 +180,9 @@ public class VinaDockingFitnessFunction implements IFitnessFunction {
 
         // Build command line
         int numArgs = 3 + selectedPeptides.size();
-        if (isCapping()) {
-            numArgs++;
-        }
         String[] args = new String[numArgs];
         int j = 0;
         args[j++] = dockingScript;
-        if (isCapping()) {
-            args[j++] = "-c";
-        }
         args[j++] = "-d";
         args[j++] = workDir;
         for (int i = 0; i < selectedPeptides.size(); i++) {
