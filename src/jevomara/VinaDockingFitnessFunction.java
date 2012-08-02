@@ -142,8 +142,7 @@ public class VinaDockingFitnessFunction implements IFitnessFunction {
         // If capping is enabled, add leading and trailing underscores to
         // peptide sequence in order indicate their N-terminus should be
         // acetylated and their C-terminus should be amidated.
-        //if (isCapping()) {
-        if (true) {
+        if (isCapping()) {
             List<String> peptides2 = new ArrayList<String>();
             for (String peptide : peptides) {
                 peptides2.add("_" + peptide + "_");
