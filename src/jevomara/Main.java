@@ -32,7 +32,7 @@ public class Main {
     /**
      * Version string of the entire project
      */
-    static String version = "0.2.1";
+    static String version = "0.2.2";
 
     /** slf4j logging */
     private static final Logger log = LoggerFactory.getLogger(Main.class);
