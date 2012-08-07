@@ -105,7 +105,7 @@ public class Main {
         ISelector selection = new TournamentSelection().setTournamentSize(tournamentSize);
         //IFitnessFunction fitnessFunction = new SequenceIdentityFitnessFunction().setTargetSequence("RRRR");
         //IFitnessFunction fitnessFunction = new MOEPharmacophoreFitnessFunction();
-        IFitnessFunction fitnessFunction = new VinaDockingFitnessFunction().setBaseDir(baseDir).setCapping(capping);
+        IFitnessFunction fitnessFunction = new VinaDockingFitnessFunction().setBaseDir(baseDir).setDockingScript(dockingScript).setCapping(capping);
         //ITerminationCriterion terminationCriterion = new MaxIterationsMinFitnessTerminationCriterion().setMaxIterations(iterations).setMinFitness(new Fitness(minFitness));
         ITerminationCriterion terminationCriterion = new MaxIterationsTerminationCriterion().setMaxIterations(iterations);
         //ITerminationCriterion terminationCriterion = new MinFitnessTerminationCriterion().setMinFitness(new Fitness(minFitness));
