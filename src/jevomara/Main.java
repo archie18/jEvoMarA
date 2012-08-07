@@ -91,6 +91,7 @@ public class Main {
         //String baseDir = "/home/andreas/Documents/evoVina/1BL0_docking_wDNA";
         //String baseDir = "/home/andreas/Documents/evoVina/1BL0_docking_BoxA";
         String baseDir = prop.getProperty("baseDir");
+        String dockingScript = prop.getProperty("dockingScript");
         boolean capping = Boolean.valueOf(prop.getProperty("capping"));
 
         // Initilize random number generator

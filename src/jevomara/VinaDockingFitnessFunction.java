@@ -30,7 +30,7 @@ public class VinaDockingFitnessFunction implements IFitnessFunction {
     /** slf4j logging */
     private static final Logger log = LoggerFactory.getLogger(VinaDockingFitnessFunction.class);
 
-    private String dockingScript = "/home/andreas/Documents/evoVina/evoVinaDock.sh";
+    private String dockingScript;
     private String dockingScoresFile = "bestranking.lst";
     private String dockingScoresSeparator = "\t";
     private String baseDir;
@@ -38,7 +38,7 @@ public class VinaDockingFitnessFunction implements IFitnessFunction {
     private Map<String, Double> dockingScores = new HashMap<String, Double>();
     private double errorFitness = 1000;
     /** Cap peptides? (Acetylate N-terminus, amidate C-terminus) **/
-    private boolean capping = false;
+    private boolean capping = true;
 
     /**
      * Returns true if peptides should be capped (acetylate N-terminus, amidate C-terminus).
@@ -57,6 +57,26 @@ public class VinaDockingFitnessFunction implements IFitnessFunction {
         this.capping = capping;
         return this;
     }
+
+    /**
+     * Return docking script path
+     * @return docking script path
+     */
+    public String getDockingScript() {
+        return dockingScript;
+    }
+
+    /**
+     * Sets the path to the docking script
+     * @param dockingScript path to the docking script
+     * @return this object
+     */
+    public VinaDockingFitnessFunction setDockingScript(String dockingScript) {
+        this.dockingScript = dockingScript;
+        return this;
+    }
+    
+    
 
     public static boolean removeDirectory(File directory) {
 
@@ -145,7 +165,7 @@ public class VinaDockingFitnessFunction implements IFitnessFunction {
         if (isCapping()) {
             List<String> peptides2 = new ArrayList<String>();
             for (String peptide : peptides) {
-                peptides2.add("_" + peptide + "_");
+                peptides2.add("@" + peptide + "@");
             }
             peptides = peptides2;
         }
