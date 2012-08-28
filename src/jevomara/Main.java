@@ -32,7 +32,7 @@ public class Main {
     /**
      * Version string of the entire project
      */
-    static String version = "0.2.2";
+    static String version = "0.2.3";
 
     /** slf4j logging */
     private static final Logger log = LoggerFactory.getLogger(Main.class);
@@ -92,6 +92,7 @@ public class Main {
         //String baseDir = "/home/andreas/Documents/evoVina/1BL0_docking_BoxA";
         String baseDir = prop.getProperty("baseDir");
         String dockingScript = prop.getProperty("dockingScript");
+        String dockingAlgorithm = prop.getProperty("dockingAlgorithm");
         boolean capping = Boolean.valueOf(prop.getProperty("capping"));
 
         // Initilize random number generator
@@ -105,7 +106,7 @@ public class Main {
         ISelector selection = new TournamentSelection().setTournamentSize(tournamentSize);
         //IFitnessFunction fitnessFunction = new SequenceIdentityFitnessFunction().setTargetSequence("RRRR");
         //IFitnessFunction fitnessFunction = new MOEPharmacophoreFitnessFunction();
-        IFitnessFunction fitnessFunction = new VinaDockingFitnessFunction().setBaseDir(baseDir).setDockingScript(dockingScript).setCapping(capping);
+        IFitnessFunction fitnessFunction = new VinaDockingFitnessFunction().setBaseDir(baseDir).setDockingScript(dockingScript).setDockingAlgorithm(dockingAlgorithm).setCapping(capping);
         //ITerminationCriterion terminationCriterion = new MaxIterationsMinFitnessTerminationCriterion().setMaxIterations(iterations).setMinFitness(new Fitness(minFitness));
         ITerminationCriterion terminationCriterion = new MaxIterationsTerminationCriterion().setMaxIterations(iterations);
         //ITerminationCriterion terminationCriterion = new MinFitnessTerminationCriterion().setMinFitness(new Fitness(minFitness));

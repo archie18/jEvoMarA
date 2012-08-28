@@ -33,6 +33,8 @@ public class VinaDockingFitnessFunction implements IFitnessFunction {
     private String dockingScript;
     private String dockingScoresFile = "bestranking.lst";
     private String dockingScoresSeparator = "\t";
+    /** "vina" for AutoDock Vina or "gold" for GOLD */
+    private String dockingAlgorithm = "vina";
     private String baseDir;
     //private String baseDir = "/Users/andreas/Documents/evoVina/1BL0_docking";
     private Map<String, Double> dockingScores = new HashMap<String, Double>();
@@ -75,8 +77,26 @@ public class VinaDockingFitnessFunction implements IFitnessFunction {
         this.dockingScript = dockingScript;
         return this;
     }
-    
-    
+
+    /**
+     * Use which docking algorithm?
+     * "vina" for AutoDock Vina or "gold" for GOLD.
+     * @return "vina" for AutoDock Vina or "gold" for GOLD
+     */
+    public String getDockingAlgorithm() {
+        return dockingAlgorithm;
+    }
+
+    /**
+     * Use which docking algorithm?
+     * "vina" for AutoDock Vina or "gold" for GOLD. "vina" is the default.
+     * @param dockingAlgorithm "vina" for AutoDock Vina or "gold" for GOLD
+     * @return this object
+     */
+    public VinaDockingFitnessFunction setDockingAlgorithm(String dockingAlgorithm) {
+        this.dockingAlgorithm = dockingAlgorithm;
+        return this;
+    }    
 
     public static boolean removeDirectory(File directory) {
 
@@ -159,13 +179,13 @@ public class VinaDockingFitnessFunction implements IFitnessFunction {
             peptides.add(AminoAcids.binaryToSingleLetterCode(((BitArrayGenoType) individual.getGenoType()).getChromosome()));
         }
         
-        // If capping is enabled, add leading and trailing underscores to
+        // If capping is enabled, add leading "Ac-" and trailing "-NMe" to
         // peptide sequence in order indicate their N-terminus should be
         // acetylated and their C-terminus should be amidated.
         if (isCapping()) {
             List<String> peptides2 = new ArrayList<String>();
             for (String peptide : peptides) {
-                peptides2.add("@" + peptide + "@");
+                peptides2.add("Ac-" + peptide + "-NMe");
             }
             peptides = peptides2;
         }
@@ -199,11 +219,17 @@ public class VinaDockingFitnessFunction implements IFitnessFunction {
 
         // Build command line
         int numArgs = 3 + selectedPeptides.size();
+        if ("gold".equals(dockingAlgorithm)) {
+            numArgs++;
+        }
         String[] args = new String[numArgs];
         int j = 0;
         args[j++] = dockingScript;
         args[j++] = "-d";
         args[j++] = workDir;
+        if ("gold".equals(dockingAlgorithm)) {
+            args[j++] = "-g";
+        }
         for (int i = 0; i < selectedPeptides.size(); i++) {
             args[j + i] = selectedPeptides.get(i);
         }
