@@ -93,7 +93,8 @@ public class Main {
         String baseDir = prop.getProperty("baseDir");
         String dockingScript = prop.getProperty("dockingScript");
         String dockingAlgorithm = prop.getProperty("dockingAlgorithm");
-        boolean capping = Boolean.valueOf(prop.getProperty("capping"));
+        String NCap = prop.getProperty("N-cap");
+        String CCap = prop.getProperty("C-cap");
 
         // Initilize random number generator
         Random.setSeed(seed);
@@ -106,7 +107,7 @@ public class Main {
         ISelector selection = new TournamentSelection().setTournamentSize(tournamentSize);
         //IFitnessFunction fitnessFunction = new SequenceIdentityFitnessFunction().setTargetSequence("RRRR");
         //IFitnessFunction fitnessFunction = new MOEPharmacophoreFitnessFunction();
-        IFitnessFunction fitnessFunction = new VinaDockingFitnessFunction().setBaseDir(baseDir).setDockingScript(dockingScript).setDockingAlgorithm(dockingAlgorithm).setCapping(capping);
+        IFitnessFunction fitnessFunction = new VinaDockingFitnessFunction().setBaseDir(baseDir).setDockingScript(dockingScript).setDockingAlgorithm(dockingAlgorithm).setNCap(NCap).setCCap(CCap);
         //ITerminationCriterion terminationCriterion = new MaxIterationsMinFitnessTerminationCriterion().setMaxIterations(iterations).setMinFitness(new Fitness(minFitness));
         ITerminationCriterion terminationCriterion = new MaxIterationsTerminationCriterion().setMaxIterations(iterations);
         //ITerminationCriterion terminationCriterion = new MinFitnessTerminationCriterion().setMinFitness(new Fitness(minFitness));

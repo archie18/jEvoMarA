@@ -39,24 +39,44 @@ public class VinaDockingFitnessFunction implements IFitnessFunction {
     //private String baseDir = "/Users/andreas/Documents/evoVina/1BL0_docking";
     private Map<String, Double> dockingScores = new HashMap<String, Double>();
     private double errorFitness = 1000;
-    /** Cap peptides? (Acetylate N-terminus, amidate C-terminus) **/
-    private boolean capping = true;
+    /** N-terminal cap **/
+    private String NCap;
+    /** C-terminal cap **/
+    private String CCap;
 
     /**
-     * Returns true if peptides should be capped (acetylate N-terminus, amidate C-terminus).
-     * @return true if peptides should be capped
+     * Returns the N-terminal cap (Ac- = Acetyl, Bzim- = 2-benzimidazolyl).
+     * @return the N-terminal cap
      */
-    public boolean isCapping() {
-        return capping;
+    public String getNCap() {
+        return NCap;
     }
 
     /**
-     * Determines whether peptides should be capped (acetylate N-terminus, amidate C-terminus)
-     * @param capping true if peptides should be capped
+     * Sets the N-terminal cap (Ac- = Acetyl, Bzim- = 2-benzimidazolyl).
+     * @param NCap the N-terminal cap
      * @return this object
      */
-    public VinaDockingFitnessFunction setCapping(boolean capping) {
-        this.capping = capping;
+    public VinaDockingFitnessFunction setNCap(String NCap) {
+        this.NCap = NCap;
+        return this;
+    }
+
+    /**
+     * Returns the C-terminal cap (NMe- = N-methyl (amidation)).
+     * @return the C-terminal cap
+     */
+    public String getCCap() {
+        return CCap;
+    }
+
+    /**
+     * Sets the C-terminal cap (NMe- = N-methyl (amidation))
+     * @param CCap the C-terminal cap
+     * @return this object
+     */
+    public VinaDockingFitnessFunction setCCap(String CCap) {
+        this.CCap = CCap;
         return this;
     }
 
@@ -179,13 +199,17 @@ public class VinaDockingFitnessFunction implements IFitnessFunction {
             peptides.add(AminoAcids.binaryToSingleLetterCode(((BitArrayGenoType) individual.getGenoType()).getChromosome()));
         }
         
-        // If capping is enabled, add leading "Ac-" and trailing "-NMe" to
-        // peptide sequence in order indicate their N-terminus should be
-        // acetylated and their C-terminus should be amidated.
-        if (isCapping()) {
+        // If cap is not null, add cap to peptide sequence
+        if (NCap != null || CCap != null) {
             List<String> peptides2 = new ArrayList<String>();
             for (String peptide : peptides) {
-                peptides2.add("Ac-" + peptide + "-NMe");
+                if (NCap != null) {
+                    peptide = NCap + peptide;
+                }
+                if (CCap != null) {
+                    peptide = peptide + CCap;
+                }
+                peptides2.add(peptide);
             }
             peptides = peptides2;
         }
